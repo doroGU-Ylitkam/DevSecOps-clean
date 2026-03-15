@@ -1,0 +1,50 @@
+# scanner_config.yaml  –  DevSecOps Prototype Configuration
+# ----------------------------------------------------------
+# Central configuration for all security scanning tools.
+# Referenced by the orchestrator and pipeline stages.
+
+sonarqube:
+  host: http://sonarqube:9000
+  project_key: devsecops-prototype
+  quality_gate:
+    fail_on_error: true
+    # Pipeline blocks if any NEW vulnerability is introduced
+    conditions:
+      - metric: new_vulnerabilities
+        op: GT
+        threshold: 0
+
+dependency_check:
+  format: JSON
+  fail_on_cvss: 7.0          # Block build if CVSS >= 7.0
+  suppression_file: security/config/dependency-check-suppressions.xml
+  update_nvd: true
+
+trivy:
+  severity:
+    - HIGH
+    - CRITICAL
+  exit_code: 0               # Do not fail build; triage decides
+  ignore_unfixed: false
+  format: json
+  timeout: 10m
+
+owasp_zap:
+  scan_type: baseline         # baseline | full | api
+  spider_timeout_sec: 300
+  ascan_timeout_sec: 600
+  risk_threshold: MEDIUM      # Report findings at this level and above
+  ajax_spider: false
+
+triage:
+  # Priority score thresholds (PriorityScore = CVSS + Exploitability + SystemImpact)
+  thresholds:
+    immediate: 14.0
+    high: 9.0
+    medium: 5.0
+    low: 0.0
+  # Block the pipeline if IMMEDIATE findings are found
+  block_on_immediate: true
+  # Email the security team on IMMEDIATE findings
+  notify_on_immediate: true
+  notify_email: security-team@company.com

@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "tool": "owasp-zap",
+  "generated_at": "2024-03-09T10:00:00Z",
+  "total": 3,
+  "vulnerabilities": [
+    {
+      "id": "ZAP-10038",
+      "title": "Content Security Policy (CSP) Header Not Set",
+      "description": "Content Security Policy header is not included in the HTTP response.",
+      "severity": "MEDIUM",
+      "cvss_score": 5.5,
+      "cve": "",
+      "component": "http://app:8080/",
+      "file_path": "http://app:8080/",
+      "line": 0,
+      "fix_recommendation": "Set a CSP header in the HTTP response: Content-Security-Policy: default-src 'self'",
+      "references": ["https://owasp.org/www-project-secure-headers/"],
+      "source_tool": "owasp-zap",
+      "detected_at": "2024-03-09T10:00:00Z"
+    },
+    {
+      "id": "ZAP-10020",
+      "title": "Missing Anti-clickjacking Header",
+      "description": "The response does not include X-Frame-Options or Content-Security-Policy frame-ancestors.",
+      "severity": "MEDIUM",
+      "cvss_score": 4.7,
+      "cve": "",
+      "component": "http://app:8080/api/hello",
+      "file_path": "http://app:8080/api/hello",
+      "line": 0,
+      "fix_recommendation": "Add X-Frame-Options: DENY or Content-Security-Policy: frame-ancestors 'none' to HTTP responses.",
+      "references": ["https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options"],
+      "source_tool": "owasp-zap",
+      "detected_at": "2024-03-09T10:00:00Z"
+    },
+    {
+      "id": "ZAP-10021",
+      "title": "X-Content-Type-Options Header Missing",
+      "description": "The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+      "severity": "LOW",
+      "cvss_score": 2.5,
+      "cve": "",
+      "component": "http://app:8080/",
+      "file_path": "http://app:8080/",
+      "line": 0,
+      "fix_recommendation": "Set X-Content-Type-Options: nosniff in all HTTP responses.",
+      "references": ["https://owasp.org/www-project-secure-headers/"],
+      "source_tool": "owasp-zap",
+      "detected_at": "2024-03-09T10:00:00Z"
+    }
+  ]
+}

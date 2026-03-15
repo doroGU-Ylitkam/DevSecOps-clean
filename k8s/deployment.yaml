@@ -1,0 +1,71 @@
+# Kubernetes Deployment – DevSecOps Prototype
+# Environment variables are substituted by `envsubst` in the Jenkinsfile
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-app
+  namespace: devsecops-test
+  labels:
+    app: spring-boot-app
+    version: "${APP_VERSION}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-boot-app
+  template:
+    metadata:
+      labels:
+        app: spring-boot-app
+        version: "${APP_VERSION}"
+    spec:
+      # Security context: run as non-root
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        fsGroup: 65532
+
+      containers:
+        - name: spring-boot-app
+          image: "${DOCKER_IMAGE}:${DOCKER_TAG}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+
+          # Resource limits – important for production stability
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+          # Read-only root filesystem to prevent runtime tampering
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+
+          # Health probes
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 5
+
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "test"
+            - name: APP_VERSION
+              value: "${APP_VERSION}"
