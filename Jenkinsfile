@@ -251,11 +251,6 @@ pipeline {
         }
         failure {
             echo '>>> Pipeline FAILED – critical vulnerabilities detected.'
-            emailext(
-                subject: "SECURITY ALERT: ${APP_NAME} build #${BUILD_NUMBER} failed",
-                body: "Critical vulnerabilities detected. Review: ${BUILD_URL}",
-                to: 'security-team@company.com'
-            )
         }
         cleanup {
             sh 'kubectl delete deployment/${K8S_DEPLOYMENT} --namespace=${K8S_NAMESPACE} --ignore-not-found=true || true'
