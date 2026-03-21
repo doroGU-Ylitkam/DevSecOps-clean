@@ -29,17 +29,7 @@ pipeline {
         timestamps()
     }
 
-    stages {
-
-        stage('Install Python') {
-            steps {
-                sh '''
-                    apt-get update
-                    apt-get install -y python3 python3-pip
-                '''
-            }
-        }
-        
+    stages {  
         stage('1 – Checkout') {
             steps {
                 echo '>>> Checking out source code...'
@@ -84,7 +74,7 @@ pipeline {
 
                         python3 ${SECURITY_SCRIPT} \
                             --tool sonarqube \
-                            --sonar-host ${SONAR_HOST} \
+                            --sonar-host http://host.docker.internal:9000 \
                             --sonar-token ${SONAR_TOKEN} \
                             --sonar-project ${SONAR_PROJECT} \
                             --output ${REPORTS_DIR}/sonarqube-report.json
