@@ -71,13 +71,18 @@ pipeline {
                             -Dsonar.host.url=http://host.docker.internal:9000 \
                             -Dsonar.login=${SONAR_TOKEN} \
                             --batch-mode --no-transfer-progress
+                    '''
 
-                        python3 ${SECURITY_SCRIPT} \
-                            --tool sonarqube \
-                            --sonar-host http://host.docker.internal:9000 \
-                            --sonar-token ${SONAR_TOKEN} \
-                            --sonar-project ${SONAR_PROJECT} \
-                            --output ${REPORTS_DIR}/sonarqube-report.json
+                    sh '''
+                        docker run --rm \
+                            -v $(pwd):/app \
+                            python:3.11 \
+                            python /app/security/orchestrator/security_orchestrator.py \
+                                --tool sonarqube \
+                                --sonar-host http://host.docker.internal:9000 \
+                                --sonar-token $SONAR_TOKEN \
+                                --sonar-project devsecops-prototype \
+                                --output /app/reports/sonarqube-report.json
                     '''
                 }
             }
