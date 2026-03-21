@@ -14,7 +14,7 @@ pipeline {
         DOCKER_TAG        = "${APP_VERSION}"
         K8S_NAMESPACE     = 'devsecops-test'
         K8S_DEPLOYMENT    = 'spring-boot-app'
-        SONAR_HOST        = 'http://sonarqube:9000'
+        SONAR_HOST        = 'http://localhost:9000'
         SONAR_PROJECT     = 'devsecops-prototype'
         TARGET_URL        = "http://spring-boot-app-service.devsecops-test.svc.cluster.local:8080"
         REPORTS_DIR       = 'reports'
