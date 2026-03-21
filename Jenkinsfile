@@ -1,5 +1,5 @@
 // =============================================================================
-// DevSecOps Pipeline - Bachelor Thesis Prototype
+// DevSecOps Pipeline - Bachelor 2026
 // Automated Vulnerability Detection in CI/CD Process
 // =============================================================================
 
@@ -31,6 +31,15 @@ pipeline {
 
     stages {
 
+        stage('Install Python') {
+            steps {
+                sh '''
+                    apt-get update
+                    apt-get install -y python3 python3-pip
+                '''
+            }
+        }
+        
         stage('1 – Checkout') {
             steps {
                 echo '>>> Checking out source code...'
