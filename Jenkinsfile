@@ -69,7 +69,7 @@ pipeline {
                     sh '''
                         mvn sonar:sonar \
                             -Dsonar.projectKey=${SONAR_PROJECT} \
-                            -Dsonar.host.url=${SONAR_HOST} \
+                            -Dsonar.host.url=http://host.docker.internal:9000 \
                             -Dsonar.login=${SONAR_TOKEN} \
                             --batch-mode --no-transfer-progress
 
