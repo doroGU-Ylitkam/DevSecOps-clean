@@ -1,30 +1,23 @@
-# ── Stage 1: Build ──────────────────────────────────────────────────────────
-FROM maven:3.9-eclipse-temurin-17 AS builder
-
-WORKDIR /build
-
-# Cache Maven dependencies separately from source
-COPY pom.xml .
-RUN mvn dependency:go-offline --batch-mode --no-transfer-progress
-
-COPY src ./src
-RUN mvn clean package -DskipTests --batch-mode --no-transfer-progress
-
 # ── Stage 2: Run ────────────────────────────────────────────────────────────
-# Use distroless to minimise the attack surface (fewer OS packages = fewer CVEs)
-FROM gcr.io/distroless/java17-debian12:nonroot
+FROM debian:bookworm-slim  # смена distroless на минимальный Debian
 
 WORKDIR /app
 
-# Copy only the runnable JAR
+# Устанавливаем OpenJDK 17 и Docker CLI
+RUN apt-get update && apt-get install -y \
+    openjdk-17-jdk \
+    curl \
+    gnupg \
+    lsb-release \
+    sudo \
+    docker.io \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копируем JAR из builder stage
 COPY --from=builder /build/target/*.jar app.jar
 
-# Run as non-root user (uid 65532 = nonroot in distroless)
-USER nonroot
+USER 1000:1000 
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", \
-  "-Djava.security.egd=file:/dev/./urandom", \
-  "-Dspring.profiles.active=production", \
-  "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=production", "-jar", "app.jar"]
