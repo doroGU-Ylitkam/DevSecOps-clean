@@ -32,10 +32,13 @@ pipeline {
     stages {  
         stage('1 – Checkout') {
             steps {
-                echo '>>> Checking out source code...'
-                checkout scm
-                sh "mkdir -p ${REPORTS_DIR}"
-                sh 'git log --oneline -5'
+                echo '>>> FULL checkout...'
+                deleteDir()   // важно!
+        
+                git branch: 'main', 
+                    url: 'https://github.com/doroGU-Ylitkam/DevSecOps-clean.git'
+                
+                sh 'ls -la'
             }
         }
 
