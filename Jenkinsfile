@@ -49,6 +49,8 @@ pipeline {
             }
             post {
                 success { archiveArtifacts artifacts: 'target/*.jar', fingerprint: true }
+                
+            sh 'ls -la security/orchestrator/'
             }
         }
 
@@ -61,6 +63,8 @@ pipeline {
                 always {
                     junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
                 }
+
+                sh 'ls -la security/orchestrator/'
             }
         }
 
@@ -77,6 +81,7 @@ pipeline {
                                 -Dsonar.login=${SONAR_TOKEN} \
                                 --batch-mode --no-transfer-progress
                         '''
+                        sh 'ls -la security/orchestrator/'
                         sh '''
                             docker run --rm \
                                 -v $(pwd):/app \
