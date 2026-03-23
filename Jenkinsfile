@@ -82,9 +82,8 @@ pipeline {
                         sh 'ls -la security/orchestrator/'
                         sh '''
                             cd ..
-                            ls -la
                             docker run --rm \
-                                -v $(pwd):/app \
+                                -v $(pwd):/app ls -la\
                                 python:3.11 \
                                 python security_orchestrator.py \
                                     --tool sonarqube \
