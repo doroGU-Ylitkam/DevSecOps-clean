@@ -78,7 +78,7 @@ pipeline {
                             -v $(pwd):/app \
                             -v $(pwd)/scripts:/scripts \
                             python:3.11 \
-                            python /scripts/security_orchestrator.py \
+                            python ${SECURITY_SCRIPT} \
                                 --tool sonarqube \
                                 --sonar-host http://host.docker.internal:9000 \
                                 --sonar-token $SONAR_TOKEN \
