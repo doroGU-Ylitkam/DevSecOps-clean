@@ -46,11 +46,10 @@ pipeline {
             steps {
                 echo '>>> Building Java Spring Boot application...'
                 sh 'mvn clean package -DskipTests --batch-mode --no-transfer-progress'
+                sh 'ls -la security/orchestrator/'
             }
             post {
                 success { archiveArtifacts artifacts: 'target/*.jar', fingerprint: true }
-                
-            sh 'ls -la security/orchestrator/'
             }
         }
 
@@ -58,13 +57,12 @@ pipeline {
             steps {
                 echo '>>> Running unit tests...'
                 sh 'mvn test --batch-mode --no-transfer-progress'
+                sh 'ls -la security/orchestrator/'
             }
             post {
                 always {
                     junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
                 }
-
-                sh 'ls -la security/orchestrator/'
             }
         }
 
