@@ -81,7 +81,7 @@ pipeline {
                             docker run --rm \
                                 -v $(pwd):/app \
                                 python:3.11 \
-                                python /app/${SECURITY_SCRIPT} \
+                                python ${SECURITY_SCRIPT} \
                                     --tool sonarqube \
                                     --sonar-host http://host.docker.internal:9000 \
                                     --sonar-token $SONAR_TOKEN \
