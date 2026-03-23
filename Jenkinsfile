@@ -76,6 +76,7 @@ pipeline {
                     sh '''
                         docker run --rm \
                             -v $(pwd):/app \
+                            -v $(pwd)/scripts:/scripts \
                             python:3.11 \
                             python /scripts/security_orchestrator.py \
                                 --tool sonarqube \
