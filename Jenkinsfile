@@ -72,18 +72,20 @@ pipeline {
                             -Dsonar.login=${SONAR_TOKEN} \
                             --batch-mode --no-transfer-progress
                     '''
-
-                   sh '''
-                        docker run --rm \
-                            -v $(pwd):/app \
-                            python:3.11 \
-                            python /app/${SECURITY_SCRIPT} \
-                                --tool sonarqube \
-                                --sonar-host http://host.docker.internal:9000 \
-                                --sonar-token $SONAR_TOKEN \
-                                --sonar-project devsecops-prototype \
-                                --output /app/${REPORTS_DIR}/sonarqube-report.json
-                    '''
+                    sh 'echo "WORKSPACE=$(pwd)"'
+                    sh 'ls -la security/orchestrator/ || echo "DIR NOT FOUND"'
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                       sh '''
+                            docker run --rm \
+                                -v $(pwd):/app \
+                                python:3.11 \
+                                python /app/${SECURITY_SCRIPT} \
+                                    --tool sonarqube \
+                                    --sonar-host http://host.docker.internal:9000 \
+                                    --sonar-token $SONAR_TOKEN \
+                                    --sonar-project devsecops-prototype \
+                                    --output /app/${REPORTS_DIR}/sonarqube-report.json
+                        '''
                 }
             }
             post {
