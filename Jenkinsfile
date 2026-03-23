@@ -61,21 +61,20 @@ pipeline {
             }
         }
 
-        stage('4 – SAST: SonarQube') {
-            steps {
-                echo '>>> Running Static Application Security Testing (SonarQube)...'
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                        mvn sonar:sonar \
-                            -Dsonar.projectKey=${SONAR_PROJECT} \
-                            -Dsonar.host.url=http://host.docker.internal:9000 \
-                            -Dsonar.login=${SONAR_TOKEN} \
-                            --batch-mode --no-transfer-progress
-                    '''
+           stage('4 – SAST: SonarQube') {
+                steps {
+                    echo '>>> Running Static Application Security Testing (SonarQube)...'
                     sh 'echo "WORKSPACE=$(pwd)"'
                     sh 'ls -la security/orchestrator/ || echo "DIR NOT FOUND"'
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                       sh '''
+                        sh '''
+                            mvn sonar:sonar \
+                                -Dsonar.projectKey=${SONAR_PROJECT} \
+                                -Dsonar.host.url=http://host.docker.internal:9000 \
+                                -Dsonar.login=${SONAR_TOKEN} \
+                                --batch-mode --no-transfer-progress
+                        '''
+                        sh '''
                             docker run --rm \
                                 -v $(pwd):/app \
                                 python:3.11 \
@@ -86,12 +85,15 @@ pipeline {
                                     --sonar-project devsecops-prototype \
                                     --output /app/${REPORTS_DIR}/sonarqube-report.json
                         '''
+                    }
+                }
+                post {
+                    always {
+                        archiveArtifacts artifacts: "${REPORTS_DIR}/sonarqube-report.json",
+                                         allowEmptyArchive: true
+                    }
                 }
             }
-            post {
-                always { archiveArtifacts artifacts: "${REPORTS_DIR}/sonarqube-report.json", allowEmptyArchive: true }
-            }
-        }
 
         stage('5 – Dependency Scanning: OWASP DC') {
             steps {
