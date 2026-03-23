@@ -38,7 +38,7 @@ pipeline {
                 git branch: 'main', 
                     url: 'https://github.com/doroGU-Ylitkam/DevSecOps-clean.git'
                 
-                sh 'ls -la'
+                sh 'ls -la /security/orchestrator/security_orchestrator.py'
             }
         }
 
