@@ -73,17 +73,16 @@ pipeline {
                             --batch-mode --no-transfer-progress
                     '''
 
-                    sh '''
+                   sh '''
                         docker run --rm \
                             -v $(pwd):/app \
-                            -v $(pwd)/scripts:/scripts \
                             python:3.11 \
                             python /app/${SECURITY_SCRIPT} \
                                 --tool sonarqube \
                                 --sonar-host http://host.docker.internal:9000 \
                                 --sonar-token $SONAR_TOKEN \
                                 --sonar-project devsecops-prototype \
-                                --output /app/reports/sonarqube-report.json
+                                --output /app/${REPORTS_DIR}/sonarqube-report.json
                     '''
                 }
             }
