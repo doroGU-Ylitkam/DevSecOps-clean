@@ -81,6 +81,7 @@ pipeline {
                         '''
                         sh 'ls -la security/orchestrator/'
                         sh '''
+                            ls -la
                             docker run --rm \
                                 -v $(pwd):/app \
                                 python:3.11 \
