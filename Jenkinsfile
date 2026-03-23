@@ -81,11 +81,12 @@ pipeline {
                         '''
                         sh 'ls -la security/orchestrator/'
                         sh '''
+                            cd security/orchestrator/
                             ls -la
                             docker run --rm \
                                 -v $(pwd):/app \
                                 python:3.11 \
-                                python security/orchestrator/security_orchestrator.py \
+                                python security_orchestrator.py \
                                     --tool sonarqube \
                                     --sonar-host http://host.docker.internal:9000 \
                                     --sonar-token $SONAR_TOKEN \
