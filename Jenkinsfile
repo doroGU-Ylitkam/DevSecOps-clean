@@ -81,7 +81,7 @@ pipeline {
                         '''
                         sh 'ls -la security/orchestrator/'
                         sh '''
-                            cd security/orchestrator/
+                            cd ..
                             ls -la
                             docker run --rm \
                                 -v $(pwd):/app \
