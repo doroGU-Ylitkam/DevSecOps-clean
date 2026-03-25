@@ -83,6 +83,12 @@ pipeline {
                         sh 'ls -la'
                         sh '''
                             docker run --rm \
+                              -v ${WORKSPACE}:/app \
+                              python:3.11 \
+                              ls -la /app
+                            '''
+                        sh '''
+                            docker run --rm \
                                 -v $(pwd):/app \
                                 -w /app \
                                 python:3.11 \
