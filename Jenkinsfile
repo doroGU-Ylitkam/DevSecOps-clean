@@ -103,7 +103,7 @@ pipeline {
                     -Dformat=JSON \
                     -DoutputDirectory=${REPORTS_DIR} \
                     -DfailBuildOnCVSS=0 \
-                    -DnvdApiKey=${NVD_KEY} \
+                    -DnvdApiKey=41d7d8a6-0d8a-4e78-aeb8-939202524863 \
                     --batch-mode --no-transfer-progress || true
             
                 # Only normalise if the report was actually created
