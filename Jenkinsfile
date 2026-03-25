@@ -100,6 +100,7 @@ pipeline {
                                 docker run --rm \
                                 -v /var/jenkins_home/workspace/Bachelor:/app \
                                 -w /app \
+                                ls -la /app
                                 python:3.11 \
                                 python /app/security/orchestrator/security_orchestrator.py \
                                     --tool sonarqube \
