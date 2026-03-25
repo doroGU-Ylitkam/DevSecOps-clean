@@ -97,9 +97,9 @@ pipeline {
                                 ls -la /app/security/orchestrator
                             '''
                          sh '''
-                                docker create --name temp1 python:3.11
-                                docker cp . temp1:/app
-                                docker start -a temp1 python /app/security/orchestrator/security_orchestrator.py \
+                                docker create --name temp2 python:3.11
+                                docker cp . temp2:/app
+                                docker start -a temp2 python /app/security/orchestrator/security_orchestrator.py \
                                     
                                     --sonar-host http://host.docker.internal:9000 \
                                     --sonar-token $SONAR_TOKEN \
