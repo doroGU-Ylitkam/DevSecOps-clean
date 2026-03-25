@@ -105,7 +105,7 @@ pipeline {
                                     --sonar-token $SONAR_TOKEN \
                                     --sonar-project devsecops-prototype \
                                     --output /app/${REPORTS_DIR}/sonarqube-report.json
-                                docker cp temp1:/app/${REPORTS_DIR}/sonarqube-report.json ${REPORTS_DIR}/sonarqube-report.json
+                                docker cp temp2:/app/${REPORTS_DIR}/sonarqube-report.json ${REPORTS_DIR}/sonarqube-report.json
                                 docker rm temp1
                             '''
                     }
