@@ -96,7 +96,8 @@ pipeline {
                             docker run --rm -v /var/jenkins_home/workspace/Bachelor:/app python:3.11 \
                                 ls -la /app/security/orchestrator
                             '''
-                        docker.image('python:3.11').inside {
+                        script {
+                            docker.image('python:3.11').inside {
                             sh 'ls -la'
                             sh 'python security/orchestrator/security_orchestrator.py'
                         }
@@ -112,6 +113,7 @@ pipeline {
                                 docker cp temp:/app/${REPORTS_DIR}/sonarqube-report.json ${REPORTS_DIR}/sonarqube-report.json
                                 docker rm temp
                             '''
+                        }
                     }
                 }
                 post {
