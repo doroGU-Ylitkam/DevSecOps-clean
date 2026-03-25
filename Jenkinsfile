@@ -5,9 +5,20 @@
 
 pipeline {
     agent {
-        docker {
-            image 'python:3.11'
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
+        label 'docker' // или 'any', если у вас нет специального агента
+    }
+    
+    stages {
+        stage('Setup Python Environment') {
+            steps {
+                script {
+                    // Загружаем Python образ и используем его для всех Python операций
+                    docker.image('python:3.11').withRun('-v /var/run/docker.sock:/var/run/docker.sock') { container ->
+                        // Этот блок выполняется внутри контейнера Python
+                        // Но нужно будет передавать команды через sh "docker exec ${container.id} ..."
+                    }
+                }
+            }
         }
     }
 
