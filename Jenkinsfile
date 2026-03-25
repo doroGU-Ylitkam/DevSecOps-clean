@@ -122,7 +122,6 @@ pipeline {
             post {
                 always {
                     archiveArtifacts artifacts: "${REPORTS_DIR}/dependency-check*.json", allowEmptyArchive: true
-                    dependencyCheckPublisher pattern: "${REPORTS_DIR}/dependency-check-report.json"
                 }
             }
         }
