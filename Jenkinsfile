@@ -96,11 +96,6 @@ pipeline {
                             docker run --rm -v /var/jenkins_home/workspace/Bachelor:/app python:3.11 \
                                 ls -la /app/security/orchestrator
                             '''
-                        script {
-                            docker.image('python:3.11').inside {
-                            sh 'ls -la'
-                            sh 'python security/orchestrator/security_orchestrator.py'
-                        }
                          sh '''
                                 docker create --name temp python:3.11
                                 docker cp . temp:/app
