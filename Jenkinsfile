@@ -88,6 +88,14 @@ pipeline {
                               ls -la /app/security/orchestrator
                             '''
                         sh '''
+                            echo "HOST CHECK:"
+                            ls -la /var/jenkins_home/workspace/Bachelor/security/orchestrator || true
+                            
+                            echo "DOCKER CHECK:"
+                            docker run --rm -v /var/jenkins_home/workspace/Bachelor:/app python:3.11 \
+                                ls -la /app/security/orchestrator
+                            '''
+                        sh '''
                             docker run --rm \
                                 -v $(pwd):/app \
                                 -w /app \
