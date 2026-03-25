@@ -80,9 +80,8 @@ pipeline {
                                 --batch-mode --no-transfer-progress
 
                         '''
-                        sh 'ls -la security/orchestrator/'
+                        sh 'ls -la'
                         sh '''
-                            cd ..
                             docker run --rm \
                                 -v $(pwd):/app \
                                 -w /app \
