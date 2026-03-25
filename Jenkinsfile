@@ -97,16 +97,16 @@ pipeline {
                                 ls -la /app/security/orchestrator
                             '''
                          sh '''
-                                docker create --name temp2 python:3.11
-                                docker cp . temp2:/app
-                                docker start -a temp2 python /app/security/orchestrator/security_orchestrator.py \
-                                    
+                                docker run --rm \
+                                -v $(pwd):/app \
+                                -w /app \
+                                python:3.11 \
+                                python /app/security/orchestrator/security_orchestrator.py \
+                                    --tool sonarqube \
                                     --sonar-host http://host.docker.internal:9000 \
                                     --sonar-token $SONAR_TOKEN \
                                     --sonar-project devsecops-prototype \
                                     --output /app/${REPORTS_DIR}/sonarqube-report.json
-                                docker cp temp2:/app/${REPORTS_DIR}/sonarqube-report.json ${REPORTS_DIR}/sonarqube-report.json
-                                docker rm temp1
                             '''
                     }
                 }
