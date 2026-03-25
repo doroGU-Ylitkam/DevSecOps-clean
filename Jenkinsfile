@@ -85,7 +85,7 @@ pipeline {
                             docker run --rm \
                               -v ${WORKSPACE}:/app \
                               python:3.11 \
-                              ls -la /app
+                              ls -la /app/security
                             '''
                         sh '''
                             docker run --rm \
