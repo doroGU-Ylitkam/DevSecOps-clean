@@ -85,6 +85,7 @@ pipeline {
                             cd ..
                             docker run --rm \
                                 -v $(pwd):/app \
+                                -w /app \
                                 python:3.11 \
                                 python security_orchestrator.py \
                                     --tool sonarqube \
