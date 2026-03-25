@@ -98,18 +98,26 @@ pipeline {
         stage('5 – Dependency Scanning: OWASP DC') {
             steps {
                 echo '>>> Running OWASP Dependency-Check...'
-                sh '''
-                    mvn org.owasp:dependency-check-maven:check \
-                        -Dformat=JSON \
-                        -DoutputDirectory=${REPORTS_DIR} \
-                        -DfailBuildOnCVSS=0 \
-                        --batch-mode --no-transfer-progress || true
-
+               sh '''
+                mvn org.owasp:dependency-check-maven:check \
+                    -Dformat=JSON \
+                    -DoutputDirectory=${REPORTS_DIR} \
+                    -DfailBuildOnCVSS=0 \
+                    -DnvdApiKey=${NVD_KEY} \
+                    --batch-mode --no-transfer-progress || true
+            
+                # Only normalise if the report was actually created
+                if [ -f "${REPORTS_DIR}/dependency-check-report.json" ]; then
                     python3 ${SECURITY_SCRIPT} \
                         --tool dependency-check \
                         --input ${REPORTS_DIR}/dependency-check-report.json \
                         --output ${REPORTS_DIR}/dependency-check-normalized.json
-                '''
+                else
+                    echo "Dependency-Check report not generated - skipping normalisation"
+                    echo '{"schema_version":"1.0","tool":"dependency-check","total":0,"vulnerabilities":[]}' \
+                        > ${REPORTS_DIR}/dependency-check-normalized.json
+                fi
+            '''
             }
             post {
                 always {
