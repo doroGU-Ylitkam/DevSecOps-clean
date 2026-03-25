@@ -108,7 +108,6 @@ pipeline {
                                 docker cp temp:/app/${REPORTS_DIR}/sonarqube-report.json ${REPORTS_DIR}/sonarqube-report.json
                                 docker rm temp
                             '''
-                        }
                     }
                 }
                 post {
