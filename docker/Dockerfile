@@ -1,5 +1,6 @@
 # ── Stage 2: Run ────────────────────────────────────────────────────────────
-FROM debian:bookworm-slim  # смена distroless на минимальный Debian
+# смена distroless на минимальный Debian
+FROM debian:bookworm-slim  
 
 WORKDIR /app
 
