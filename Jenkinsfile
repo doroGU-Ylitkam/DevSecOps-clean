@@ -68,10 +68,8 @@ pipeline {
         }
 
            stage('4 – SAST: SonarQube') {
+               
                 steps {
-                    echo '>>> Running Static Application Security Testing (SonarQube)...'
-                    sh 'echo "WORKSPACE=$(pwd)"'
-                    sh 'ls -la security/orchestrator/ || echo "DIR NOT FOUND"'
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                         sh '''
                             mvn sonar:sonar \
@@ -79,36 +77,14 @@ pipeline {
                                 -Dsonar.host.url=http://host.docker.internal:9000 \
                                 -Dsonar.login=${SONAR_TOKEN} \
                                 --batch-mode --no-transfer-progress
-
+            
+                            python3 ${SECURITY_SCRIPT} \
+                                --tool sonarqube \
+                                --sonar-host http://host.docker.internal:9000 \
+                                --sonar-token ${SONAR_TOKEN} \
+                                --sonar-project devsecops-prototype \
+                                --output ${REPORTS_DIR}/sonarqube-report.json
                         '''
-                        sh 'ls -la'
-                        sh '''
-                            docker run --rm \
-                              -v ${WORKSPACE}:/app \
-                              python:3.11 \
-                              ls -la /app/security/orchestrator
-                            '''
-                        sh '''
-                            echo "HOST CHECK:"
-                            ls -la /var/jenkins_home/workspace/Bachelor/security/orchestrator || true
-                            
-                            echo "DOCKER CHECK:"
-                            docker run --rm -v /var/jenkins_home/workspace/Bachelor:/app python:3.11 \
-                                ls -la /app/security/orchestrator
-                            '''
-                         sh '''
-                                docker run --rm \
-                                -v /var/jenkins_home/workspace/Bachelor:/app \
-                                -w /app \
-                                ls -la /app
-                                python:3.11 \
-                                python /app/security/orchestrator/security_orchestrator.py \
-                                    --tool sonarqube \
-                                    --sonar-host http://host.docker.internal:9000 \
-                                    --sonar-token $SONAR_TOKEN \
-                                    --sonar-project devsecops-prototype \
-                                    --output /app/${REPORTS_DIR}/sonarqube-report.json
-                            '''
                     }
                 }
                 post {
