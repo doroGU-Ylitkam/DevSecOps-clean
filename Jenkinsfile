@@ -98,7 +98,7 @@ pipeline {
                             '''
                          sh '''
                                 docker run --rm \
-                                -v $(pwd):/app \
+                                -v /var/jenkins_home/workspace/Bachelor:/app \
                                 -w /app \
                                 python:3.11 \
                                 python /app/security/orchestrator/security_orchestrator.py \
