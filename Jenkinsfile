@@ -85,7 +85,7 @@ pipeline {
                             docker run --rm \
                               -v ${WORKSPACE}:/app \
                               python:3.11 \
-                              ls -la /app/security
+                              ls -la /app/security/orchestrator
                             '''
                         sh '''
                             docker run --rm \
