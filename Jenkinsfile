@@ -31,19 +31,6 @@ pipeline {
     }
 
     stages {  
-       
-        stage('Setup Python Environment') {
-            steps {
-                script {
-                    // Загружаем Python образ и используем его для всех Python операций
-                    docker.image('python:3.11').withRun('-v /var/run/docker.sock:/var/run/docker.sock') { container ->
-                        // Этот блок выполняется внутри контейнера Python
-                        // Но нужно будет передавать команды через sh "docker exec ${container.id} ..."
-                    }
-                }
-            }
-        }
-        
         stage('1 – Checkout') {
             steps {
                 echo '>>> FULL checkout...'
@@ -109,6 +96,10 @@ pipeline {
                             docker run --rm -v /var/jenkins_home/workspace/Bachelor:/app python:3.11 \
                                 ls -la /app/security/orchestrator
                             '''
+                        docker.image('python:3.11').inside {
+                            sh 'ls -la'
+                            sh 'python security/orchestrator/security_orchestrator.py'
+                        }
                          sh '''
                                 docker create --name temp python:3.11
                                 docker cp . temp:/app
