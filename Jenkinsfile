@@ -95,18 +95,18 @@ pipeline {
                             docker run --rm -v /var/jenkins_home/workspace/Bachelor:/app python:3.11 \
                                 ls -la /app/security/orchestrator
                             '''
-                        sh '''
-                            docker run --rm \
-                                -v $(pwd):/app \
-                                -w /app \
-                                python:3.11 \
-                                python /security/orchestrator/security_orchestrator.py \
+                         sh '''
+                                docker create --name temp python:3.11
+                                docker cp . temp:/app
+                                docker start -a temp python /app/security/orchestrator/security_orchestrator.py \
                                     --tool sonarqube \
                                     --sonar-host http://host.docker.internal:9000 \
                                     --sonar-token $SONAR_TOKEN \
                                     --sonar-project devsecops-prototype \
                                     --output /app/${REPORTS_DIR}/sonarqube-report.json
-                        '''
+                                docker cp temp:/app/${REPORTS_DIR}/sonarqube-report.json ${REPORTS_DIR}/sonarqube-report.json
+                                docker rm temp
+                            '''
                     }
                 }
                 post {
