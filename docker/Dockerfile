@@ -1,24 +1,15 @@
-# ── Stage 2: Run ────────────────────────────────────────────────────────────
-# смена distroless на минимальный Debian
-FROM debian:bookworm-slim  
+FROM maven:3.9-eclipse-temurin-17 AS builder
+WORKDIR /build
+COPY pom.xml .
+RUN mvn dependency:go-offline --batch-mode --no-transfer-progress
+COPY src ./src
+RUN mvn clean package -DskipTests --batch-mode --no-transfer-progress
 
+# ── Stage 2: Run ─────────────────────────────────────────────────────────────
+FROM debian:bookworm-slim
 WORKDIR /app
-
-# Устанавливаем OpenJDK 17 и Docker CLI
-RUN apt-get update && apt-get install -y \
-    openjdk-17-jdk \
-    curl \
-    gnupg \
-    lsb-release \
-    sudo \
-    docker.io \
-    && rm -rf /var/lib/apt/lists/*
-
-# Копируем JAR из builder stage
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 COPY --from=builder /build/target/*.jar app.jar
-
-USER 1000:1000 
-
+USER appuser
 EXPOSE 8080
-
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=production", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=8080"]
