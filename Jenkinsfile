@@ -170,21 +170,30 @@ pipeline {
             steps {
                 echo '>>> Running Dynamic Application Security Testing (OWASP ZAP)...'
                 sh '''
-                    docker run -d --name zap-daemon --network host \
-                        -v $(pwd)/${REPORTS_DIR}:/zap/wrk \
-                        owasp/zap2docker-stable \
-                        zap.sh -daemon -host 0.0.0.0 -port 8090 \
-                            -config api.addrs.addr.name=.* \
-                            -config api.addrs.addr.regex=true \
-                            -config api.disablekey=true
-                    sleep 15
-
-                    python3 ${SECURITY_SCRIPT} \
-                        --tool zap \
-                        --zap-host http://localhost:8090 \
-                        --target-url ${TARGET_URL} \
-                        --output ${REPORTS_DIR}/zap-report.json
-                '''
+                docker rm -f zap-daemon 2>/dev/null || true
+            
+                docker run -d \
+                    --name zap-daemon \
+                    --network host \
+                    -v "$(pwd)/${REPORTS_DIR}:/zap/wrk" \
+                    ghcr.io/zaproxy/zaproxy:stable \
+                    zap.sh -daemon \
+                        -host 0.0.0.0 -port 8090 \
+                        -config api.addrs.addr.name=.* \
+                        -config api.addrs.addr.regex=true \
+                        -config api.disablekey=true
+            
+                for i in $(seq 1 12); do
+                    curl -sf http://localhost:8090/JSON/core/view/version/ \
+                        && echo "ZAP ready." && break || sleep 5
+                done
+            
+                python3 ${SECURITY_SCRIPT} \
+                    --tool zap \
+                    --zap-host http://localhost:8090 \
+                    --target-url ${TARGET_URL} \
+                    --output ${REPORTS_DIR}/zap-report.json
+            '''
             }
             post {
                 always {
