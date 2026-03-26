@@ -256,7 +256,7 @@ pipeline {
 
         stage('11 – Generate Final Report') {
             steps {
-                echo '>>> Generating unified vulnerability report...'
+                echo '>>> [11/11] Generating unified vulnerability report...'
                 sh '''
                     python3 ${REPORT_SCRIPT} \
                         --input   ${REPORTS_DIR}/triaged-vulnerabilities.json \
@@ -269,11 +269,8 @@ pipeline {
             }
             post {
                 always {
-                    publishHTML(target: [
-                        allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true,
-                        reportDir: "${REPORTS_DIR}", reportFiles: 'final-vulnerability-report.html',
-                        reportName: 'Security Vulnerability Report'
-                    ])
+                    // publishHTML removed – HTML Publisher plugin not installed
+                    // The report is still accessible via Build Artifacts
                     archiveArtifacts artifacts: "${REPORTS_DIR}/final-vulnerability-report.*",
                                      allowEmptyArchive: true
                 }
