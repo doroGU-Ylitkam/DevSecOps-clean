@@ -17,7 +17,7 @@ pipeline {
         K8S_DEPLOYMENT    = 'spring-boot-app'
         SONAR_HOST        = 'http://localhost:9000'
         SONAR_PROJECT     = 'devsecops-prototype'
-        TARGET_URL        = "http://spring-boot-app-service.devsecops-test.svc.cluster.local:8080"
+        TARGET_URL        = "http://localhost:8090"
         REPORTS_DIR       = 'reports'
         SECURITY_SCRIPT   = 'security/orchestrator/security_orchestrator.py'
         TRIAGE_SCRIPT     = 'security/triage/vulnerability_triage.py'
