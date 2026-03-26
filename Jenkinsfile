@@ -140,7 +140,6 @@ pipeline {
         }
 
         stage('7 – Container Scanning: Trivy') {
-            
             steps {
                 echo '>>> [7/11] Skipping Trivy scan due to attack in march 2026 – writing empty report for pipeline continuity...'
                 sh '''
@@ -154,6 +153,7 @@ pipeline {
                                      allowEmptyArchive: true
                 }
             }
+        }
 
         stage('8 – Deploy to Test Env') {
             steps {
