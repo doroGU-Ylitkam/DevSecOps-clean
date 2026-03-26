@@ -6,7 +6,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests --batch-mode --no-transfer-progress
 
 # ── Stage 2: Run ─────────────────────────────────────────────────────────────
-FROM debian:bookworm-slim
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 COPY --from=builder /build/target/*.jar app.jar
