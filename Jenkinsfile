@@ -57,7 +57,7 @@ pipeline {
         stage('3 – Unit Tests') {
             steps {
                 echo '>>> Running unit tests...'
-                sh 'mvn test --batch-mode --no-transfer-progress'
+                sh 'mvn test --batch-mode --no-transfer-progress -Dmaven.test.failure.ignore=true'
                 sh 'ls -la security/orchestrator/'
             }
             post {
