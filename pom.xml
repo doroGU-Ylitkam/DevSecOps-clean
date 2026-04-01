@@ -82,16 +82,6 @@
       <version>3.2.1</version>
     </dependency>
 
-    <!--
-      ⚠️  INTENTIONALLY VULNERABLE DEPENDENCY #3
-      Spring Framework 5.3.18 – Spring4Shell RCE (CVE-2022-22965), CVSS 9.8
-      Detected by: OWASP Dependency-Check
-    -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
-      <version>5.3.18</version>
-    </dependency>
 
     <!-- Test -->
     <dependency>
