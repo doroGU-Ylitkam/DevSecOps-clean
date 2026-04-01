@@ -13,10 +13,13 @@
   </parent>
 
   <groupId>com.example</groupId>
-  <artifactId>spring-boot-app</artifactId>
+  <artifactId>vulnerable-app</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>spring-boot-app</name>
-  <description>DevSecOps Prototype – Bachelor Thesis</description>
+  <name>vulnerable-app</name>
+  <description>
+    Intentionally vulnerable Spring Boot application for DevSecOps thesis demonstration.
+    DO NOT deploy to production.
+  </description>
 
   <properties>
     <java.version>17</java.version>
@@ -28,6 +31,8 @@
   </properties>
 
   <dependencies>
+
+    <!-- Spring Boot core -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -36,29 +41,81 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
+
+    <!-- H2 in-memory database (used with raw JDBC for SQL injection demo) -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- Spring JDBC (used intentionally without parameterized queries) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+
+    <!--
+      ⚠️  INTENTIONALLY VULNERABLE DEPENDENCY #1
+      Log4j 2.14.1 – contains Log4Shell (CVE-2021-44228), CVSS 10.0
+      Detected by: OWASP Dependency-Check, Trivy
+    -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.14.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.14.1</version>
+    </dependency>
+
+    <!--
+      ⚠️  INTENTIONALLY VULNERABLE DEPENDENCY #2
+      Commons Collections 3.2.1 – Java deserialization RCE (CVE-2015-6420), CVSS 7.5
+      Detected by: OWASP Dependency-Check
+    -->
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+
+    <!--
+      ⚠️  INTENTIONALLY VULNERABLE DEPENDENCY #3
+      Spring Framework 5.3.18 – Spring4Shell RCE (CVE-2022-22965), CVSS 9.8
+      Detected by: OWASP Dependency-Check
+    -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>5.3.18</version>
+    </dependency>
+
+    <!-- Test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Spring Boot packaging -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
-      <!-- JaCoCo code coverage (required by SonarQube) -->
+
+      <!-- JaCoCo for code coverage (used by SonarQube) -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.11</version>
         <executions>
-          <execution>
-            <goals><goal>prepare-agent</goal></goals>
-          </execution>
+          <execution><goals><goal>prepare-agent</goal></goals></execution>
           <execution>
             <id>report</id>
             <phase>test</phase>
@@ -66,6 +123,7 @@
           </execution>
         </executions>
       </plugin>
+
       <!-- OWASP Dependency-Check -->
       <plugin>
         <groupId>org.owasp</groupId>
@@ -77,7 +135,8 @@
           <failBuildOnCVSS>0</failBuildOnCVSS>
         </configuration>
       </plugin>
-      <!-- SonarQube analysis -->
+
+      <!-- SonarQube -->
       <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>
         <artifactId>sonar-maven-plugin</artifactId>
