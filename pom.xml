@@ -121,7 +121,7 @@
         <version>9.0.9</version>
         <configuration>
           <format>JSON</format>
-          <outputDirectory>${project.build.directory}/dependency-check</outputDirectory>
+          <outputDirectory>reports</outputDirectory>
           <failBuildOnCVSS>0</failBuildOnCVSS>
         </configuration>
       </plugin>
