@@ -103,7 +103,7 @@ pipeline {
                         -DoutputDirectory=${REPORTS_DIR} \
                         -DfailBuildOnCVSS=0 \
                         -DnvdApiKey=5510f917-69e5-4efc-9291-2c2bca6a5fbb \
-                        -DautoUpdate=false \
+                        -DautoUpdate=true \
                         --batch-mode --no-transfer-progress || true
         
                     if [ -f "${REPORTS_DIR}/dependency-check-report.json" ]; then
