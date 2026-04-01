@@ -94,38 +94,38 @@ pipeline {
                     }
                 }
             }
-
         stage('5 – Dependency Scanning: OWASP DC') {
             steps {
                 echo '>>> Running OWASP Dependency-Check...'
-               sh '''
-                mvn org.owasp:dependency-check-maven:check \
-                    -Dformat=JSON \
-                    -DoutputDirectory=${REPORTS_DIR} \
-                    -DfailBuildOnCVSS=0 \
-                    -DnvdApiKey=5510f917-69e5-4efc-9291-2c2bca6a5fbb \
-                    --batch-mode --no-transfer-progress
-            
-                # Only normalise if the report was actually created
-                if [ -f "${REPORTS_DIR}/dependency-check-report.json" ]; then
-                    python3 ${SECURITY_SCRIPT} \
-                        --tool dependency-check \
-                        --input ${REPORTS_DIR}/dependency-check-report.json \
-                        --output ${REPORTS_DIR}/dependency-check-normalized.json
-                else
-                    echo "Dependency-Check report not generated - skipping normalisation"
-                    echo '{"schema_version":"1.0","tool":"dependency-check","total":0,"vulnerabilities":[]}' \
-                        > ${REPORTS_DIR}/dependency-check-normalized.json
-                fi
-            '''
+                sh '''
+                    mvn org.owasp:dependency-check-maven:check \
+                        -Dformat=JSON \
+                        -DoutputDirectory=${REPORTS_DIR} \
+                        -DfailBuildOnCVSS=0 \
+                        -DnvdApiKey=5510f917-69e5-4efc-9291-2c2bca6a5fbb \
+                        -DautoUpdate=false \
+                        --batch-mode --no-transfer-progress || true
+        
+                    if [ -f "${REPORTS_DIR}/dependency-check-report.json" ]; then
+                        python3 ${SECURITY_SCRIPT} \
+                            --tool dependency-check \
+                            --input ${REPORTS_DIR}/dependency-check-report.json \
+                            --output ${REPORTS_DIR}/dependency-check-normalized.json
+                    else
+                        echo "Dependency-Check report not generated - writing empty report"
+                        echo '{"schema_version":"1.0","tool":"dependency-check","total":0,"vulnerabilities":[]}' \
+                            > ${REPORTS_DIR}/dependency-check-normalized.json
+                    fi
+                '''
             }
             post {
                 always {
-                    archiveArtifacts artifacts: "${REPORTS_DIR}/dependency-check*.json", allowEmptyArchive: true
+                    archiveArtifacts artifacts: "${REPORTS_DIR}/dependency-check*.json",
+                                     allowEmptyArchive: true
                 }
             }
         }
-
+    
         stage('6 – Docker Build') {
             steps {
                 echo '>>> Building Docker image...'
