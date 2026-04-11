@@ -1,48 +1,48 @@
-# DevSecOps Pipeline Prototype
-**Bachelor Thesis:** Development of a method for automated vulnerability detection in the DevSecOps process
+Прототип алгоритма-конвейера DevSecOps
+Дипломная работа: Разработка метода автоматического обнаружения уязвимостей в процессе DevSecOps
 
 ---
 
-## Project Directory Structure
+Структура каталога проекта
 
 ```
-devsecops-prototype/
+devsecops-clean/
 │
-├── Jenkinsfile                          # CI/CD pipeline definition (11 stages)
-├── pom.xml                              # Maven build + security plugin config
+├── Jenkinsfile                              # Основной файл проекта, в котором прописан алгоритм из 11 стадий по проверке кода
+├── pom.xml                                  # Файл с зависимостями для проверяемого приложения
 ├── README.md
 │
 ├── docker/
-│   └── Dockerfile                       # Multi-stage, distroless, non-root image
+│   └── Dockerfile                           # Multi-stage, distroless, non-root image
 │
 ├── k8s/
-│   ├── deployment.yaml                  # Kubernetes Deployment (test env)
-│   └── service.yaml                     # Kubernetes ClusterIP Service
+│   ├── deployment.yaml                      # Kubernetes Deployment (test env)
+│   └── service.yaml                         # Kubernetes ClusterIP Service
 │
 ├── src/
-│   ├── main/java/com/example/app/
-│   │   ├── Application.java             # Spring Boot entry point
-│   │   └── HealthController.java        # Sample REST endpoints for DAST target
-│   └── test/java/com/example/app/
-│       └── HealthControllerTest.java    # Unit tests (JaCoCo coverage)
+│   └── test/java/com/example/vulnerable
+│       └── VulnerableApplicationTest.java   # Ошибочное
+│   
+│   
+│ 
 │
 ├── security/
 │   ├── config/
-│   │   └── scanner_config.yaml          # Central tool configuration
+│   │   └── scanner_config.yaml              # Central tool configuration
 │   │
 │   ├── orchestrator/
-│   │   └── security_orchestrator.py     # [SCRIPT 1] Run & normalise scanners
+│   │   └── security_orchestrator.py         # [SCRIPT 1] Run & normalise scanners
 │   │
 │   ├── merger/
-│   │   └── report_merger.py             # [SCRIPT 2] Merge + deduplicate reports
+│   │   └── report_merger.py                 # [SCRIPT 2] Merge + deduplicate reports
 │   │
 │   ├── triage/
-│   │   └── vulnerability_triage.py      # [SCRIPT 3] Priority scoring algorithm
+│   │   └── vulnerability_triage.py          # [SCRIPT 3] Priority scoring algorithm
 │   │
 │   └── reporter/
-│       └── report_generator.py          # [SCRIPT 4] HTML + JSON final report
+│       └── report_generator.py              # [SCRIPT 4] HTML + JSON final report
 │
-└── reports/                             # Generated at runtime (git-ignored)
+└── reports/                                 # Generated at runtime (git-ignored)
     ├── sonarqube-report.json
     ├── dependency-check-normalized.json
     ├── trivy-normalized.json
