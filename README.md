@@ -118,13 +118,13 @@ devsecops-clean/
 PriorityScore = CVSS_Score + Exploitability_Score + SystemImpact_Score
 ```
 
-| Component | Range | Description |
+| Компонент | Диапазон | Описание |
 |---|---|---|
 | CVSS_Score | 0.0 – 10.0 | Базовая оценка NVD, полученная от сканера |
 | Exploitability | 0.0 – 5.0 | Основана на уровне опасности; +0.5 если подтверждено DAST; +0.5 если обнаружено несколькими сканерами |
 | SystemImpact | 1.0 – 3.0 | 3.0 для ZAP (живая система), 2.5 для SonarQube (исходный код), 2.0 для Trivy/DC (библиотеки) |
 
-| Priority Label | Score Threshold | Action |
+| Метка приоритета | Порог оценки | Действие со стороны команды разработки |
 |---|---|---|
 | 🔴 IMMEDIATE | ≥ 14.0 |Блокировать развёртывание, исправить сейчас |
 | 🟠 HIGH | ≥ 9.0 |Исправить в текущем спринте |
@@ -135,7 +135,7 @@ PriorityScore = CVSS_Score + Exploitability_Score + SystemImpact_Score
 
 ## Сводка по инструментам безопасности
 
-| Tool | Type | Stage | Output |
+| Инструмент | Тип | Стадия | Результат |
 |---|---|---|---|
 | SonarQube | SAST (статический анализ) | 4 | Уязвимости в коде и «горячие точки» |
 | OWASP Dependency-Check | SCA (анализ зависимостей) | 5 | CVE в сторонних библиотеках |
