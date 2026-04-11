@@ -1,9 +1,9 @@
-Прототип алгоритма-конвейера DevSecOps
-Дипломная работа: Разработка метода автоматического обнаружения уязвимостей в процессе DevSecOps
+# Прототип алгоритма-конвейера DevSecOps
+Дипломная работа бакалавриата: Разработка метода автоматического обнаружения уязвимостей в процессе DevSecOps
 
 ---
 
-Структура каталога проекта
+## Структура каталога проекта
 
 ```
 devsecops-clean/
@@ -31,18 +31,18 @@ devsecops-clean/
 │   │   └── scanner_config.yaml              # файл с конфигурацией для сканирования на наличие угроз
 │   │
 │   ├── orchestrator/
-│   │   └── security_orchestrator.py         # [SCRIPT 1] Файл оркестрации: 
+│   │   └── security_orchestrator.py         # [SCRIPT 1] Файл оркестрации: унифицирует выводы работы всех применяемых инструментов
 │   │
 │   ├── merger/
-│   │   └── report_merger.py                 # [SCRIPT 2] Merge + deduplicate reports
+│   │   └── report_merger.py                 # [SCRIPT 2] Производит слияние всех отчетов в один, убирает дубликаты ошибок
 │   │
 │   ├── triage/
-│   │   └── vulnerability_triage.py          # [SCRIPT 3] Priority scoring algorithm
+│   │   └── vulnerability_triage.py          # [SCRIPT 3] Производит триаж уязвимостей (распределение от критических к легким)
 │   │
 │   └── reporter/
-│       └── report_generator.py              # [SCRIPT 4] HTML + JSON final report
+│       └── report_generator.py              # [SCRIPT 4] Формирует из образованных с помощью security_orchestrator файлов отчеты в формате JSON и HTML
 │
-└── reports/                                 # Generated at runtime (git-ignored)
+└── reports/                                 # Отчеты, которые воспроизводятся алгоритмом во время исполнения
     ├── sonarqube-report.json
     ├── dependency-check-normalized.json
     ├── trivy-normalized.json
@@ -50,69 +50,69 @@ devsecops-clean/
     ├── merged-vulnerabilities.json
     ├── triaged-vulnerabilities.json
     ├── final-vulnerability-report.json
-    └── final-vulnerability-report.html  # ← Published by Jenkins HTML Publisher
+    └── final-vulnerability-report.html
 ```
 
 ---
 
-## Component Interaction Overview
+## Общая схема взаимодействия компонентов
 
 ```
-SOURCE CODE
+ИСХОДНЫЙ КОД
     │
     ▼
-[Stage 1] Checkout ──────────────────────────────────────────────────
+[Стадия 1] Checkout (получение кода из репозитория) ─────────────────────
     │
     ▼
-[Stage 2] Maven Build (mvn clean package)
+[Стадия 2] Сборка Maven (mvn clean package)
     │
     ▼
-[Stage 3] Unit Tests + JaCoCo Coverage
+[Стадия 3] Модульные тесты + покрытие JaCoCo
     │
     ▼
-[Stage 4] SAST ── SonarQube ──► security_orchestrator.py ──► sonarqube-report.json
-    │                                    (REST API fetch + normalise)
+[Стадия 4] SAST (статический анализ) ── SonarQube ──► security_orchestrator.py ──► sonarqube-report.json
+    │                                    (получение через REST API + нормализация)
     ▼
-[Stage 5] Dep. Scan ── OWASP DC ──► security_orchestrator.py ──► dep-check-normalized.json
-    │                                    (parse raw JSON + normalise)
+[Стадия 5] SCA (анализ зависимостей) ── OWASP Dependency-Check ──► security_orchestrator.py ──► dep-check-normalized.json
+    │                                    (парсинг сырого JSON + нормализация)
     ▼
-[Stage 6] Docker Build ── builds ${DOCKER_IMAGE}:${BUILD_NUMBER}
+[Стадия 6] Сборка Docker-образа ── сборка ${DOCKER_IMAGE}:${BUILD_NUMBER}
     │
     ▼
-[Stage 7] Container Scan ── Trivy ──► security_orchestrator.py ──► trivy-normalized.json
-    │                                    (parse raw JSON + normalise)
+[Стадия 7] Сканирование контейнера ── Trivy ──► security_orchestrator.py ──► trivy-normalized.json
+    │                                    (парсинг сырого JSON + нормализация)
     ▼
-[Stage 8] Deploy to Kubernetes test namespace
+[Стадия 8] Развёртывание в тестовом пространстве имён Kubernetes
     │
     ▼
-[Stage 9] DAST ── OWASP ZAP ──► security_orchestrator.py ──► zap-report.json
-    │                                    (spider + active scan + normalise)
+[Стадия 9] DAST (динамический анализ) ── OWASP ZAP ──► security_orchestrator.py ──► zap-report.json
+    │                                    (обход сайта + активное сканирование + нормализация)
     ▼
-[Stage 10] Triage
+[Стадия 10] Триаж (сортировка уязвимостей)
     │   report_merger.py
-    │   ├── Load all 4 normalised reports
-    │   ├── Flat-merge into single list
-    │   ├── Deduplicate (CVE-ID / title+component fingerprint)
+    │   ├── Загрузить все 4 нормализованных отчёта
+    │   ├── Объединить в единый плоский список
+    │   ├── Дедуплицировать (по CVE-ID или по сигнатуре "название + компонент")
     │   └── merged-vulnerabilities.json
     │
     │   vulnerability_triage.py
     │   ├── PriorityScore = CVSS + Exploitability + SystemImpact
-    │   ├── Sort by priority score (descending)
+    │   ├── Отсортировать по убыванию приоритета
     │   └── triaged-vulnerabilities.json
     │
     ▼
-[Stage 11] Report
+[Стадия 11] Формирование отчёта
     │   report_generator.py
     │   ├── final-vulnerability-report.json
-    │   └── final-vulnerability-report.html  (published to Jenkins)
+    │   └── final-vulnerability-report.html  (публикуется в Jenkins)
     │
     ▼
-  Jenkins: Archive artifacts, Publish HTML, Email on failure
+  Jenkins: архивирование артефактов, публикация HTML, уведомление по email при ошибке
 ```
 
 ---
 
-## Priority Score Formula
+## Формула расчёта приоритета уязвимости
 
 ```
 PriorityScore = CVSS_Score + Exploitability_Score + SystemImpact_Score
