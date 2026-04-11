@@ -120,61 +120,24 @@ PriorityScore = CVSS_Score + Exploitability_Score + SystemImpact_Score
 
 | Component | Range | Description |
 |---|---|---|
-| CVSS_Score | 0.0 – 10.0 | NVD base score from scanner |
-| Exploitability | 0.0 – 5.0 | Based on severity; +0.5 for DAST-confirmed; +0.5 if multi-scanner |
-| SystemImpact | 1.0 – 3.0 | 3.0 ZAP (live), 2.5 SonarQube (code), 2.0 Trivy/DC (library) |
+| CVSS_Score | 0.0 – 10.0 | Базовая оценка NVD, полученная от сканера |
+| Exploitability | 0.0 – 5.0 | Основана на уровне опасности; +0.5 если подтверждено DAST; +0.5 если обнаружено несколькими сканерами |
+| SystemImpact | 1.0 – 3.0 | 3.0 для ZAP (живая система), 2.5 для SonarQube (исходный код), 2.0 для Trivy/DC (библиотеки) |
 
 | Priority Label | Score Threshold | Action |
 |---|---|---|
-| 🔴 IMMEDIATE | ≥ 14.0 | Block deployment, fix now |
-| 🟠 HIGH | ≥ 9.0 | Fix in current sprint |
-| 🟡 MEDIUM | ≥ 5.0 | Plan for next release |
-| 🟢 LOW | < 5.0 | Track in backlog |
+| 🔴 IMMEDIATE | ≥ 14.0 |Блокировать развёртывание, исправить сейчас |
+| 🟠 HIGH | ≥ 9.0 |Исправить в текущем спринте |
+| 🟡 MEDIUM | ≥ 5.0 | Запланировать на следующий релиз |
+| 🟢 LOW | < 5.0 | 	Отслеживать в бэклоге |
 
 ---
 
-## Quick Start (local demo)
-
-```bash
-# 1. Start infrastructure
-docker-compose up -d sonarqube jenkins
-
-# 2. Create test reports directory
-mkdir -p reports
-
-# 3. Run orchestrator on sample data
-python3 security/orchestrator/security_orchestrator.py \
-    --tool dependency-check \
-    --input sample-data/dependency-check-report.json \
-    --output reports/dependency-check-normalized.json
-
-# 4. Merge reports
-python3 security/merger/report_merger.py \
-    --inputs reports/*.json \
-    --output reports/merged-vulnerabilities.json
-
-# 5. Triage
-python3 security/triage/vulnerability_triage.py \
-    --input  reports/merged-vulnerabilities.json \
-    --output reports/triaged-vulnerabilities.json
-
-# 6. Generate final report
-python3 security/reporter/report_generator.py \
-    --input   reports/triaged-vulnerabilities.json \
-    --output  reports/final-vulnerability-report.html \
-    --json    reports/final-vulnerability-report.json \
-    --build   1 --app spring-boot-app --version 1.0
-
-# Open reports/final-vulnerability-report.html in your browser
-```
-
----
-
-## Security Tools Summary
+## Сводка по инструментам безопасности
 
 | Tool | Type | Stage | Output |
 |---|---|---|---|
-| SonarQube | SAST | 4 | Code vulnerabilities & hotspots |
-| OWASP Dependency-Check | SCA | 5 | CVEs in third-party libraries |
-| Trivy | Container | 7 | OS + library CVEs in Docker image |
-| OWASP ZAP | DAST | 9 | Runtime HTTP attack surface |
+| SonarQube | SAST (статический анализ) | 4 | Уязвимости в коде и «горячие точки» |
+| OWASP Dependency-Check | SCA (анализ зависимостей) | 5 | CVE в сторонних библиотеках |
+| Trivy | Сканирование контейнеров | 7 | CVE в ОС и библиотеках внутри Docker-образа |
+| OWASP ZAP | 	DAST (динамический анализ) | 9 | Атаки на HTTP-поверхность работающего приложения |
