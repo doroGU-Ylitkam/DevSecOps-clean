@@ -13,25 +13,25 @@ devsecops-clean/
 ├── README.md
 │
 ├── docker/
-│   └── Dockerfile                           # Multi-stage, distroless, non-root image
+│   └── Dockerfile                           # Файл для Docker. На его основе формируется контейнер, в котором запускается тестируемое приложение
 │
 ├── k8s/
-│   ├── deployment.yaml                      # Kubernetes Deployment (test env)
-│   └── service.yaml                         # Kubernetes ClusterIP Service
+│   ├── deployment.yaml                      # Файлы запуска тестовой среды
+│   └── service.yaml                         
 │
 ├── src/
 │   └── test/java/com/example/vulnerable
-│       └── VulnerableApplicationTest.java   # Ошибочное
+│       └── VulnerableApplicationTest.java   # Код проекта, который тестируется на наличие уязвимостей
 │   
 │   
 │ 
 │
 ├── security/
 │   ├── config/
-│   │   └── scanner_config.yaml              # Central tool configuration
+│   │   └── scanner_config.yaml              # файл с конфигурацией для сканирования на наличие угроз
 │   │
 │   ├── orchestrator/
-│   │   └── security_orchestrator.py         # [SCRIPT 1] Run & normalise scanners
+│   │   └── security_orchestrator.py         # [SCRIPT 1] Файл оркестрации: 
 │   │
 │   ├── merger/
 │   │   └── report_merger.py                 # [SCRIPT 2] Merge + deduplicate reports
