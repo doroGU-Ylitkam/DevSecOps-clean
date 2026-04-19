@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-report_merger.py  –  DevSecOps Prototype (Bachelor Thesis)
+report_merger.py  –  файл слияния отчетов
 ==========================================================
-Merges normalised vulnerability reports from multiple scanners into a
-single Unified Vulnerability Report (JSON).
+Производит слияние нормализованных отчетов с множества сканнеров в
+один отчет (в JSON-формате).
 
-Steps
+Этапы
 -----
-1. Load each tool-specific normalised JSON produced by security_orchestrator.py
-2. Collect all vulnerability dicts into one flat list
-3. Detect and remove duplicate entries (same CVE or same title+component)
-4. Produce a unified report with source-of-truth metadata
+1. Загрузка каждого нормализованного JSON отчета, сформированного security_orchestrator.py
+2. Сборка всех обнаруженных уязвимостей в один список
+3. Обнаружение и удаление дубликатов (одинаковые уязвимости или идентичные кмментарии + обнаруженный элемент)
+4. Создание единого отчета с метаданными подтверждающими достоверность собранной информации (дата запуска, номер сборки и др.)
 
-Usage
+применение
 -----
   python3 report_merger.py \\
       --inputs reports/sonarqube-report.json \\
