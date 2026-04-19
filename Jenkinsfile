@@ -1,6 +1,6 @@
 // =============================================================================
-// DevSecOps Pipeline - Bachelor 2026
-// Automated Vulnerability Detection in CI/CD Process
+// DevSecOps конвейер - бакалавриат 2026
+// Автоматическое обнаружение уязвимостей в процессе CI/CD
 // =============================================================================
 
 pipeline {
@@ -269,8 +269,8 @@ pipeline {
             }
             post {
                 always {
-                    // publishHTML removed – HTML Publisher plugin not installed
-                    // The report is still accessible via Build Artifacts
+                    // Публикация страницы HTML недоступна, так как не стоит нужный модуль
+                    // Рапорт может быть извлечен из списка артефактов
                     archiveArtifacts artifacts: "${REPORTS_DIR}/final-vulnerability-report.*",
                                      allowEmptyArchive: true
                 }
