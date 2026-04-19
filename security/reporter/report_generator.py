@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-report_generator.py  –  DevSecOps Prototype (Bachelor Thesis)
+report_generator.py  –  генератор финального отчета
 =============================================================
-Generates a polished HTML + JSON final vulnerability report
-from the triaged-vulnerabilities.json produced by vulnerability_triage.py.
+Генерирует публикуемый рапорт об обнаруженных уязвимостях в форматах JSON и HTML
+из triaged-vulnerabilities.json , разработанный vulnerability_triage.py.
 
-Usage
+Применение
 -----
   python3 report_generator.py \\
       --input   reports/triaged-vulnerabilities.json \\
@@ -26,7 +26,7 @@ logging.basicConfig(level=logging.INFO,
 log = logging.getLogger("reporter")
 
 
-# ── Severity / Priority colour maps ──────────────────────────────────────────
+# ── Определение цветов для каждой уязвимости  ──────────────────────────────────────────
 SEV_COLORS = {
     "CRITICAL": "#dc2626",
     "HIGH":     "#ea580c",
@@ -50,7 +50,7 @@ PRIO_BADGES = {
 }
 
 
-# ── HTML template ─────────────────────────────────────────────────────────────
+# ── Шаблон HTML ─────────────────────────────────────────────────────────────
 
 HTML_TEMPLATE = """\
 <!DOCTYPE html>
@@ -189,7 +189,7 @@ HTML_TEMPLATE = """\
 """
 
 
-# ── Helper renderers ──────────────────────────────────────────────────────────
+# ── Обработка помощников (комментариев к уязвимостям) ──────────────────────────────────────────────────────────
 
 def sev_badge(sev: str) -> str:
     color = SEV_COLORS.get(sev.upper(), "#6b7280")
@@ -254,7 +254,7 @@ def build_table_rows(vulns: list) -> str:
     return "\n".join(rows)
 
 
-# ── Main report generation ────────────────────────────────────────────────────
+# ── Основной модуль генерации рапорта ────────────────────────────────────────────────────
 
 def generate(input_path, html_out, json_out, build_number, app_name, version):
     data = json.loads(Path(input_path).read_text())
@@ -262,7 +262,7 @@ def generate(input_path, html_out, json_out, build_number, app_name, version):
     summary = data.get("summary", {})
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
-    # Severity counts
+    # Подсчет уязвимостей
     sev_counts = summary.get("by_severity", {})
     by_prio    = summary.get("by_priority", {})
 
@@ -271,14 +271,14 @@ def generate(input_path, html_out, json_out, build_number, app_name, version):
     medium_cnt = sev_counts.get("MEDIUM", 0)
     low_info   = sev_counts.get("LOW", 0) + sev_counts.get("INFO", 0)
 
-    # Severity bars
+    # Индикатор серьезности уязвимостей
     max_sev = max(sev_counts.values(), default=1)
     sev_bars = ""
     for sev, color in SEV_COLORS.items():
         cnt = sev_counts.get(sev, 0)
         sev_bars += bar_html(sev, cnt, max_sev, color)
 
-    # Tool bars
+    # Панель инструментов
     tool_counts: dict = {}
     for v in vulns:
         for t in v.get("reported_by", [v.get("source_tool","unknown")]):
