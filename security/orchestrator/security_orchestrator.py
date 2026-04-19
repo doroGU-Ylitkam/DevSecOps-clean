@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-security_orchestrator.py  –  DevSecOps Prototype (Bachelor Thesis)
+security_orchestrator.py  –  файл унификации отчетов
 ===================================================================
-Orchestrates security scanners (SonarQube, OWASP Dependency-Check,
-Trivy, OWASP ZAP) and normalises their output into a unified JSON schema.
+Выпоняет оркестрацию сканнеров (SonarQube, OWASP Dependency-Check,
+Trivy, OWASP ZAP) и унифицирует их вывод в JSON-формате.
 """
 
 import argparse, base64, json, logging, sys, time, urllib.request, urllib.parse
