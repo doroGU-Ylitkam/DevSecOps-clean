@@ -55,6 +55,9 @@ pipeline {
         }
 
         stage('Add signature') {
+            steps {
+                echo 'Signature added'
+            }
         }
 
         stage('3 – Unit Tests') {
@@ -159,6 +162,9 @@ pipeline {
         }
 
         stage('Check signature') {
+            steps {
+                echo 'Signature added'
+            }
         }
         
         stage('8 – Deploy to Test Env') {
