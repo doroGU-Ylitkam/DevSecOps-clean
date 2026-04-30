@@ -54,6 +54,9 @@ pipeline {
             }
         }
 
+        stage('Add signature') {
+        }
+
         stage('3 – Unit Tests') {
             steps {
                 echo '>>> Running unit tests...'
@@ -155,6 +158,9 @@ pipeline {
             }
         }
 
+        stage('Check signature') {
+        }
+        
         stage('8 – Deploy to Test Env') {
             steps {
                 echo '>>> Simulating Kubernetes deployment...'
