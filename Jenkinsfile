@@ -54,12 +54,6 @@ pipeline {
             }
         }
 
-        stage('Add signature') {
-            steps {
-                echo 'Signature added'
-            }
-        }
-
         stage('3 – Unit Tests') {
             steps {
                 echo '>>> Running unit tests...'
@@ -158,12 +152,6 @@ pipeline {
                     archiveArtifacts artifacts: "${REPORTS_DIR}/trivy-normalized.json",
                                      allowEmptyArchive: true
                 }
-            }
-        }
-
-        stage('Check signature') {
-            steps {
-                echo 'Signature added'
             }
         }
         
