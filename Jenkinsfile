@@ -81,7 +81,7 @@ pipeline {
                             mvn sonar:sonar \
                                 -Dsonar.projectKey=${SONAR_PROJECT} \
                                 -Dsonar.host.url=http://host.docker.internal:9000 \
-                                -Dsonar.token=${SONAR_TOKEN} \
+                                -Dsonar.login=${SONAR_TOKEN} \
                                 --batch-mode --no-transfer-progress
             
                             python3 ${SECURITY_SCRIPT} \
