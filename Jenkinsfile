@@ -2,12 +2,13 @@
 // DevSecOps конвейер - бакалавриат 2026
 // Автоматическое обнаружение уязвимостей в процессе CI/CD
 // =============================================================================
-
+// 5510f917-69e5-4efc-9291-2c2bca6a5fbb
 pipeline {
     agent any
 
 
     environment {
+        API_KEY_DC        = '5510f917-69e5-4efc-9291-2c2bca6a5fbb'
         APP_NAME          = 'spring-boot-app'
         APP_VERSION       = "${BUILD_NUMBER}"
         DOCKER_REGISTRY   = 'localhost:5000'
@@ -102,7 +103,7 @@ pipeline {
                         -Dformat=JSON \
                         -DoutputDirectory=${REPORTS_DIR} \
                         -DfailBuildOnCVSS=0 \
-                        -DnvdApiKey=5510f917-69e5-4efc-9291-2c2bca6a5fbb \
+                        -DnvdApiKey=${API_KEY_DC} \
                         -DautoUpdate=true \
                         --batch-mode --no-transfer-progress || true
         
