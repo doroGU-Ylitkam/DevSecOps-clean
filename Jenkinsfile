@@ -3,12 +3,12 @@
 // Автоматическое обнаружение уязвимостей в процессе CI/CD
 // =============================================================================
 // 5510f917-69e5-4efc-9291-2c2bca6a5fbb
+// API_KEY_DC        = '5510f917-69e5-4efc-9291-2c2bca6a5fbb'
 pipeline {
     agent any
 
 
     environment {
-        API_KEY_DC        = '5510f917-69e5-4efc-9291-2c2bca6a5fbb'
         APP_NAME          = 'spring-boot-app'
         APP_VERSION       = "${BUILD_NUMBER}"
         DOCKER_REGISTRY   = 'localhost:5000'
